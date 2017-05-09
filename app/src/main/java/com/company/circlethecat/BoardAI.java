@@ -1,6 +1,4 @@
-package com.blogspot.pointer_overloading.circlethecat;
-
-import android.util.Pair;
+package com.company.circlethecat;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -8,10 +6,7 @@ import java.util.Iterator;
 import java.util.PriorityQueue;
 import java.util.Random;
 
-/**
- * Created by alhaad on 8/8/15.
- */
-public class BoardAI {
+class BoardAI {
     private final Boolean[][] mBoard;
     private final int mXCatPos;
     private final int mYCatPos;
@@ -21,8 +16,9 @@ public class BoardAI {
         mXCatPos = xCatPos;
         mYCatPos = yCatPos;
     }
+
     // Either a move 0-5 or -1 for Win or -2 for Loss.
-    public int nextMove() {
+    int nextMove() {
         if (checkForLoss()) {
             return -2;
         }
@@ -31,7 +27,7 @@ public class BoardAI {
         int shortestPath = Integer.MAX_VALUE;
         int probabitlitySelector = 1;
         Random r = new Random();
-        // TODO(alhaad): Break into a functions.
+        // TODO: Break into a functions.
         for (int i = 0; i < Board.mBoardEdgeSize; i++) {
             int j = 0;
             ArrayList<Integer> path = aStarPath(i, j);
@@ -94,8 +90,6 @@ public class BoardAI {
                 probabitlitySelector += 1;
             }
         }
-
-
         return move;
     }
 
@@ -120,7 +114,7 @@ public class BoardAI {
         private int estimatedToGoal;
         private Node mParent;
 
-        Node (int x, int y, int real, int xDest, int yDest, Node parent) {
+        Node(int x, int y, int real, int xDest, int yDest, Node parent) {
             mX = x;
             mY = y;
             realFromSrc = real;
@@ -128,15 +122,12 @@ public class BoardAI {
             mParent = parent;
         }
 
-        public int heuristicCost() {
-            return  realFromSrc + estimatedToGoal;
+        int heuristicCost() {
+            return realFromSrc + estimatedToGoal;
         }
 
-        public boolean isDestination(int xDest, int yDest) {
-            if (mX == xDest && mY == yDest) {
-                return true;
-            }
-            return false;
+        boolean isDestination(int xDest, int yDest) {
+            return mX == xDest && mY == yDest;
         }
 
         private void maybeAdd(int xPos, int yPos, int xDest, int yDest, ArrayList<Node> neighbours) {
@@ -152,7 +143,7 @@ public class BoardAI {
             neighbours.add(new Node(xPos, yPos, realFromSrc + 1, xDest, yDest, this));
         }
 
-        public ArrayList<Node> getValidNeighbours(int xDest, int yDest) {
+        ArrayList<Node> getValidNeighbours(int xDest, int yDest) {
             ArrayList<Node> neighbours = new ArrayList<>();
             int xPos, yPos;
 
@@ -195,14 +186,11 @@ public class BoardAI {
             return neighbours;
         }
 
-        public boolean isSameAs(Node n) {
-            if (mX == n.mX && mY == n.mY) {
-                return true;
-            }
-            return false;
+        boolean isSameAs(Node n) {
+            return mX == n.mX && mY == n.mY;
         }
 
-        public boolean maybeUpdateNode(Node current) {
+        boolean maybeUpdateNode(Node current) {
             if (current.realFromSrc + 1 < realFromSrc) {
                 realFromSrc = current.realFromSrc + 1;
                 mParent = current;
@@ -211,7 +199,7 @@ public class BoardAI {
             return false;
         }
 
-        public void backfillMoves(ArrayList<Integer> moves) {
+        void backfillMoves(ArrayList<Integer> moves) {
             Node current = this;
             while (current.mParent != null) {
                 Node parent = current.mParent;
@@ -255,7 +243,7 @@ public class BoardAI {
                     }
                 }
                 if (direction == -1) {
-                    System.out.println("Panic!!!!!!!!"  + current.mX + " " + current.mY + " " + parent.mX + " " + parent.mY);
+                    System.out.println("Panic!!!!!!!!" + current.mX + " " + current.mY + " " + parent.mX + " " + parent.mY);
                 }
                 moves.add(direction);
 
@@ -264,7 +252,7 @@ public class BoardAI {
         }
     }
 
-    ArrayList<Integer> aStarPath(int xDest, int yDest) {
+    private ArrayList<Integer> aStarPath(int xDest, int yDest) {
         ArrayList<Integer> moves = new ArrayList<>();
 
         Comparator<Node> comparator = new NodeComparator();
@@ -300,9 +288,7 @@ public class BoardAI {
                 // Check for open position.
                 boolean isOpen = false;
                 Node updatedNode = null;
-                Iterator<Node> it = openPositions.iterator();
-                while (it.hasNext()) {
-                    Node next = it.next();
+                for (Node next : openPositions) {
                     if (neighbour.isSameAs(next)) {
                         isOpen = true;
                         if (next.maybeUpdateNode(current)) {
@@ -327,9 +313,6 @@ public class BoardAI {
 
 
     private boolean checkForLoss() {
-        if (mXCatPos <= 0 || mXCatPos >= Board.mBoardEdgeSize - 1 || mYCatPos <=0 || mYCatPos >= Board.mBoardEdgeSize - 1) {
-            return true;
-        }
-        return false;
+        return mXCatPos <= 0 || mXCatPos >= Board.mBoardEdgeSize - 1 || mYCatPos <= 0 || mYCatPos >= Board.mBoardEdgeSize - 1;
     }
 }

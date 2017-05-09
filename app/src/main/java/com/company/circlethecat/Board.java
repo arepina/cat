@@ -1,4 +1,4 @@
-package com.blogspot.pointer_overloading.circlethecat;
+package com.company.circlethecat;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
@@ -16,26 +16,11 @@ import java.util.Random;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-/**
- * Created by alhaad on 7/19/15.
- */
 public class Board extends SurfaceView {
     final SurfaceHolder mSurfaceHolder;
     // The number of tiles on a square board. Prefer an odd number.
-    final static int mBoardEdgeSize = 11;
-    final Boolean[][] mBoardContent = new Boolean[][]{
-            { false, false, false, false, false, false, false, false, false, false, false },
-            { false, false, false, false, false, false, false, false, false, false, false },
-            { false, false, false, false, false, false, false, false, false, false, false },
-            { false, false, false, false, false, false, false, false, false, false, false },
-            { false, false, false, false, false, false, false, false, false, false, false },
-            { false, false, false, false, false, false, false, false, false, false, false },
-            { false, false, false, false, false, false, false, false, false, false, false },
-            { false, false, false, false, false, false, false, false, false, false, false },
-            { false, false, false, false, false, false, false, false, false, false, false },
-            { false, false, false, false, false, false, false, false, false, false, false },
-            { false, false, false, false, false, false, false, false, false, false, false }
-    };
+    final static int mBoardEdgeSize = 13;
+    Boolean[][] mBoardContent;
     private Queue<Pair> mTouchQueue;
     private final Lock mLock;
     private Cat mCat;
@@ -48,9 +33,16 @@ public class Board extends SurfaceView {
 
     public Board(Activity activity, Bitmap catBitmap) {
         super(activity);
+        mBoardContent = new Boolean[mBoardEdgeSize][];
+        for (int i = 0; i < mBoardEdgeSize; i++) {
+            mBoardContent[i] = new Boolean[mBoardEdgeSize];
+            for (int j = 0; j < mBoardEdgeSize; j++) {
+                mBoardContent[i][j] = false;
+            }
+        }
         mActivity = activity;
         mSurfaceHolder = getHolder();
-        mTouchQueue = new LinkedList<Pair>();
+        mTouchQueue = new LinkedList<>();
         mLock = new ReentrantLock(true);
         mCatBitmap = catBitmap;
         initializeBoard();
@@ -67,7 +59,7 @@ public class Board extends SurfaceView {
 
     public void resetBoard() {
         pause();
-        mTouchQueue = new LinkedList<Pair>();
+        mTouchQueue = new LinkedList<>();
         mHasWon = false;
         for (int i = 0; i < mBoardEdgeSize; i++) {
             for (int j = 0; j < mBoardEdgeSize; j++) {
@@ -124,7 +116,7 @@ public class Board extends SurfaceView {
                 }
                 if (canvas.getHeight() > canvas.getWidth()) {
                     canvas.translate(xTrans, yTrans);
-                    canvas.drawARGB(200, 189, 183, 107);
+                    canvas.drawARGB(255,255,255,255);
                     if (!mCat.isAnimating()) {
                         processTouchEvents(canvas, xTrans, yTrans);
                     }
@@ -166,12 +158,12 @@ public class Board extends SurfaceView {
             float x = (float) p.first;
             float y = (float) p.second;
             x -= xTrans;
-            y-= yTrans;
+            y -= yTrans;
 
             int i;
             int j = (int) ((y / rectBoundSize));
             if (j % 2 == 1) {
-                i = (int) (((x - rectBoundSize/2) / rectBoundSize));
+                i = (int) (((x - rectBoundSize / 2) / rectBoundSize));
             } else {
                 i = (int) ((x / rectBoundSize));
             }
@@ -181,11 +173,11 @@ public class Board extends SurfaceView {
             }
 
             Pair catPos = mCat.position();
-            if (mBoardContent[i][j] == true || ((int)catPos.first == i && (int)catPos.second == j)) {
+            if (mBoardContent[i][j] || ((int) catPos.first == i && (int) catPos.second == j)) {
                 continue;
             }
             mBoardContent[i][j] = true;
-            BoardAI ai = new BoardAI(mBoardContent, (int)catPos.first, (int)catPos.second);
+            BoardAI ai = new BoardAI(mBoardContent, (int) catPos.first, (int) catPos.second);
             int move = ai.nextMove();
             if (move >= 0) {
                 mCat.move(move);

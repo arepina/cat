@@ -1,9 +1,7 @@
-package com.blogspot.pointer_overloading.circlethecat;
+package com.company.circlethecat;
 
 import android.app.Activity;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -11,11 +9,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
-
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdSize;
-import com.google.android.gms.ads.AdView;
-
 
 public class MainActivity extends Activity implements View.OnTouchListener {
     Board mBoard;

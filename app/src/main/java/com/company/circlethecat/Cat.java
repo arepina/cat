@@ -1,4 +1,4 @@
-package com.blogspot.pointer_overloading.circlethecat;
+package com.company.circlethecat;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -7,10 +7,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.Pair;
 
-/**
- * Created by alhaad on 8/2/15.
- */
-public class Cat {
+class Cat {
     // Present location or destination.
     private int mX, mY;
     // Source for movement.
@@ -26,7 +23,7 @@ public class Cat {
     private final Bitmap mBitmap;
     private final Bitmap mFlippedBitmap;
 
-    public Cat(Bitmap bitmap) {
+    Cat(Bitmap bitmap) {
         mX = 5;
         mY = 5;
         mDirection = 0;
@@ -39,16 +36,16 @@ public class Cat {
         mFlippedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), m, false);
     }
 
-    public void escape() {
+    void escape() {
         mHasEscaped = true;
         move(mDirection);
     }
 
-    public boolean hasEscaped() {
+    boolean hasEscaped() {
         return mHasEscaped;
     }
 
-    public void move(int direction) {
+    void move(int direction) {
         mIsAnimating = true;
         mDirection = direction;
         if (direction == 0) {
@@ -78,14 +75,15 @@ public class Cat {
         }
     }
 
-    public Boolean isAnimating() {
+    Boolean isAnimating() {
         return mIsAnimating;
     }
 
-    public Pair position() {
+    Pair position() {
         return new Pair(mX, mY);
     }
-    public void draw(Canvas canvas) {
+
+    void draw(Canvas canvas) {
         // Update action number.
         if (mIsAnimating) {
             mActionNumber = (mActionNumber + 1) % 4;
