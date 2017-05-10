@@ -2,13 +2,17 @@ package com.company.circlethecat;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.os.Handler;
 import android.util.Pair;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.Toast;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -19,7 +23,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public class Board extends SurfaceView {
     final SurfaceHolder mSurfaceHolder;
     // The number of tiles on a square board. Prefer an odd number.
-    final static int mBoardEdgeSize = 13;
+    static int mBoardEdgeSize;
     Boolean[][] mBoardContent;
     private Queue<Pair> mTouchQueue;
     private final Lock mLock;
@@ -31,8 +35,9 @@ public class Board extends SurfaceView {
     private Thread mThread;
     private Boolean mHasWon = false;
 
-    public Board(Activity activity, Bitmap catBitmap) {
+    public Board(Activity activity, Bitmap catBitmap, int BoardSize) {
         super(activity);
+        mBoardEdgeSize = BoardSize;
         mBoardContent = new Boolean[mBoardEdgeSize][];
         for (int i = 0; i < mBoardEdgeSize; i++) {
             mBoardContent[i] = new Boolean[mBoardEdgeSize];
@@ -45,16 +50,16 @@ public class Board extends SurfaceView {
         mTouchQueue = new LinkedList<>();
         mLock = new ReentrantLock(true);
         mCatBitmap = catBitmap;
-        initializeBoard();
+        initializeBoard(BoardSize);
     }
 
-    private void initializeBoard() {
-        mCat = new Cat(mCatBitmap);
+    private void initializeBoard(int BoardSize) {
+        mCat = new Cat(mCatBitmap, BoardSize);
         Random r = new Random();
         for (int i = 0; i < mBoardEdgeSize; i++) {
             mBoardContent[r.nextInt(mBoardEdgeSize)][r.nextInt(mBoardEdgeSize)] = true;
         }
-        mBoardContent[4][5] = false;
+        mBoardContent[BoardSize/2][BoardSize/2] = false;
     }
 
     public void resetBoard() {
@@ -66,7 +71,7 @@ public class Board extends SurfaceView {
                 mBoardContent[i][j] = false;
             }
         }
-        initializeBoard();
+        initializeBoard(mBoardEdgeSize);
         resume();
     }
 
@@ -91,6 +96,21 @@ public class Board extends SurfaceView {
         public void run() {
             while (mIsRunning) {
                 if ((mCat.hasEscaped() || mHasWon) && !mCat.isAnimating()) {
+                    if(mCat.hasEscaped())
+                        mActivity.runOnUiThread(new Runnable() {
+                                               public void run() {
+                                                   Toast.makeText(mActivity, "Ты проиграл:(", Toast.LENGTH_SHORT).show();
+                                               }
+                                           }
+                        );
+                    if(mHasWon)
+                        mActivity.runOnUiThread(new Runnable() {
+                                                    public void run() {
+                                                        Toast.makeText(mActivity, "Ты победил:)", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                }
+                        );
+
                     try {
                         Thread.sleep(1500);
                     } catch (InterruptedException e) {
@@ -201,11 +221,18 @@ public class Board extends SurfaceView {
         Paint paint = new Paint();
         paint.setStyle(Paint.Style.FILL);
         if (isSelected) {
-            paint.setColor(Color.rgb(255, 200, 8));
+            paint.setColor(Color.rgb(255, 255, 255));
+            canvas.drawCircle(centreX, centreY, rectBoundSize / 2, paint);
+            Bitmap b = BitmapFactory.decodeResource(getResources(), R.drawable.fire);
+            Bitmap resizedBitmap = Bitmap.createScaledBitmap(b, (int)rectBoundSize, (int)rectBoundSize, false);
+
+            canvas.drawBitmap(resizedBitmap, centreX - rectBoundSize / 2, centreY - rectBoundSize / 2 , null);
         } else {
+            //todo
             paint.setColor(Color.rgb(249, 239, 189));
+            canvas.drawCircle(centreX, centreY, rectBoundSize / 2, paint);
         }
-        canvas.drawCircle(centreX, centreY, rectBoundSize / 2, paint);
+
     }
 
     public void pause() {

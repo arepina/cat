@@ -1,6 +1,7 @@
 package com.company.circlethecat;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.Menu;
@@ -13,6 +14,7 @@ import android.widget.RelativeLayout;
 public class MainActivity extends Activity implements View.OnTouchListener {
     Board mBoard;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
@@ -22,7 +24,9 @@ public class MainActivity extends Activity implements View.OnTouchListener {
         lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
 
         super.onCreate(savedInstanceState);
-        mBoard = new Board(this, BitmapFactory.decodeResource(getResources(), R.drawable.cat_sprite));
+
+        int BoardSize = getIntent().getExtras().getInt("BoardSize");
+        mBoard = new Board(this, BitmapFactory.decodeResource(getResources(), R.drawable.cat_sprite), BoardSize);
         mBoard.setOnTouchListener(this);
 
         RelativeLayout layout = new RelativeLayout(this);

@@ -23,9 +23,9 @@ class Cat {
     private final Bitmap mBitmap;
     private final Bitmap mFlippedBitmap;
 
-    Cat(Bitmap bitmap) {
-        mX = 5;
-        mY = 5;
+    Cat(Bitmap bitmap, int boardSize) {
+        mX = boardSize / 2;
+        mY = boardSize / 2;
         mDirection = 0;
         mActionNumber = 0;
         mIsAnimating = false;
