@@ -221,7 +221,7 @@ public class Board extends SurfaceView {
         Paint paint = new Paint();
         paint.setStyle(Paint.Style.FILL);
         if (isSelected) {
-            paint.setColor(Color.rgb(255, 255, 255));
+            paint.setColor(Color.WHITE);
             canvas.drawCircle(centreX, centreY, rectBoundSize / 2, paint);
             Bitmap b = BitmapFactory.decodeResource(getResources(), R.drawable.fire);
             Bitmap resizedBitmap = Bitmap.createScaledBitmap(b, (int)rectBoundSize, (int)rectBoundSize, false);
@@ -229,7 +229,7 @@ public class Board extends SurfaceView {
             canvas.drawBitmap(resizedBitmap, centreX - rectBoundSize / 2, centreY - rectBoundSize / 2 , null);
         } else {
             //todo
-            paint.setColor(Color.rgb(249, 239, 189));
+            paint.setColor(getResources().getColor(R.color.dot_color));
             canvas.drawCircle(centreX, centreY, rectBoundSize / 2, paint);
         }
 
